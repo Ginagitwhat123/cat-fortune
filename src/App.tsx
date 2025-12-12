@@ -6,10 +6,12 @@ import { FortuneModal } from './components/FortuneModal';
 import fortunesData from './data/fortunes.json';
 
 const App: React.FC = () => {
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [hasDrawn, setHasDrawn] = useState(false);
   const [currentResult, setCurrentResult] = useState<FortuneResult | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCursorVisible, setIsCursorVisible] = useState(true);
 
   useEffect(() => {
     const stored = getStoredFortune();
@@ -17,6 +19,39 @@ const App: React.FC = () => {
       setHasDrawn(true);
       setCurrentResult(stored);
     }
+  }, []);
+
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      const withinX = e.clientX >= 0 && e.clientX <= window.innerWidth;
+      const withinY = e.clientY >= 0 && e.clientY <= window.innerHeight;
+      setCursorPos({ x: e.clientX, y: e.clientY });
+      setIsCursorVisible(withinX && withinY);
+    };
+    const handleEnter = () => setIsCursorVisible(true);
+    const handleLeave = () => setIsCursorVisible(false);
+    const handleOut = (e: MouseEvent) => {
+      if (!e.relatedTarget && !(e as any).toElement) {
+        setIsCursorVisible(false);
+      }
+    };
+    const handleBlur = () => setIsCursorVisible(false);
+    const handleFocus = () => setIsCursorVisible(true);
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseenter', handleEnter);
+    window.addEventListener('mouseleave', handleLeave);
+    window.addEventListener('mouseout', handleOut);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseenter', handleEnter);
+      window.removeEventListener('mouseleave', handleLeave);
+      window.removeEventListener('mouseout', handleOut);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, []);
 
   const drawFortune = async () => {
@@ -56,14 +91,14 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
-      <div className="mb-8 flex justify-center w-full">
+      <div className="mb-0 flex justify-center w-full">
         <img 
           src="/logo cat.png" 
           alt="抽一籤好喵" 
-          className="w-full max-w-6xl h-auto object-contain"
+          className="w-full max-w-4xl h-auto object-contain"
         />
       </div>
-      <p className="text-gray-600 mb-8 text-xl">每日運勢，貓咪相伴</p>
+      <p className="text-gray-600 mb-4 text-xl">每日運勢，貓咪相伴</p>
 
       {hasDrawn ? (
         <div>
@@ -81,9 +116,9 @@ const App: React.FC = () => {
         <button
           onClick={drawFortune}
           disabled={isLoading}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg"
+          className="bg-cyan-600 hover:bg-cyan-800 text-white font-semibold py-4 px-8 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg"
         >
-          {isLoading ? '抽籤中...' : '抽一籤'}
+          {isLoading ? '抽籤中...' : '抽出今日份的貓貓'}
         </button>
       )}
 
@@ -91,6 +126,15 @@ const App: React.FC = () => {
         <FortuneModal
           result={currentResult}
           onClose={() => setShowModal(false)}
+        />
+      )}
+
+      {isCursorVisible && (
+        <img
+          src="/cursor.png"
+          alt="cursor"
+          className="pointer-events-none fixed w-12 h-12 -translate-x-1/2 -translate-y-1/2 z-50 select-none"
+          style={{ left: cursorPos.x, top: cursorPos.y }}
         />
       )}
     </div>
