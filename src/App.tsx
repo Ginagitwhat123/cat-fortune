@@ -103,12 +103,12 @@ const App: React.FC = () => {
       {hasDrawn ? (
         <div>
           <div className="mb-6">
-            <p className="text-lg text-gray-700 mb-4">你今天已經抽過籤了！</p>
+            <p className="text-lg text-gray-700 mb-4">今天已經抽過籤囉！</p>
             <button
               onClick={handleViewFortune}
-              className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors text-lg"
+              className="bg-purple-500 shadow-lg shadow-gray-500/50 hover:bg-purple-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors text-lg"
             >
-              查看已抽的籤
+              查看今日份的貓貓
             </button>
           </div>
         </div>
@@ -116,7 +116,7 @@ const App: React.FC = () => {
         <button
           onClick={drawFortune}
           disabled={isLoading}
-          className="bg-cyan-600 hover:bg-cyan-800 text-white font-semibold py-4 px-8 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg"
+          className="shimmer-button bg-cyan-600 shadow-lg shadow-gray-500/50  hover:bg-cyan-800 text-white font-semibold py-4 px-8 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg relative"
         >
           {isLoading ? '抽籤中...' : '抽出今日份的貓貓'}
         </button>

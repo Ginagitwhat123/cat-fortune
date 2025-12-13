@@ -19,3 +19,72 @@ a,
   cursor: none !important;
 }
 
+/* 銀白色光澤動畫 - 從左下到右上，播放後停頓2秒 */
+.shimmer-button {
+  position: relative;
+  overflow: hidden;
+  animation: float-up-down 2.5s ease-in-out infinite;
+}
+
+/* 上下飄動動畫 */
+@keyframes float-up-down {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translate(-3px, 8px);
+  }
+}
+
+/* hover 時保持動畫運行，同時添加縮放效果 */
+.shimmer-button:hover {
+  animation: none;
+}
+
+.shimmer-button::before {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: linear-gradient(
+    15deg,
+    transparent 10%,
+    rgba(255, 255, 255, 0.4) 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.4) 60%,
+    transparent 70%
+  );
+  animation: shimmer-diagonal 5s ease-in infinite;
+  z-index: 1;
+  transform: rotate(45deg);
+}
+
+.shimmer-button > * {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes shimmer-diagonal {
+  0% {
+    left: -50%;
+    top: 100%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  15% {
+    left: 100%;
+    top: -50%;
+    opacity: 1;
+  }
+  20.1% {
+    opacity: 0;
+  }
+  100% {
+    left: 100%;
+    top: -50%;
+    opacity: 0;
+  }
+}
+
