@@ -17,14 +17,19 @@ export const FortuneModal: React.FC<FortuneModalProps> = ({ result, onClose }) =
         className="bg-sky-100 rounded-lg shadow-xl max-w-md w-full p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-6 bg-indigo-400 -mx-6 -mt-6 px-6 py-7 rounded-t-lg">
+        <div className="flex justify-between items-center mb-6 bg-indigo-300 -mx-6 -mt-6 px-6 py-7 rounded-t-lg">
           <div className="flex items-center gap-2">
             <img 
               src="/lucky leaf-2.png" 
               alt="幸運葉" 
               className="h-8 w-auto object-contain"
             />
-            <h2 className="text-2xl font-bold text-gray-50">今日運勢</h2>
+            <h2 
+              className="text-2xl font-bold text-gray-50"
+              style={{ textShadow: '2px 2px 4px rgba(20, 20, 20, 0.5)' }}
+            >
+              今日運勢
+            </h2>
           </div>
           <button
             onClick={onClose}
@@ -56,7 +61,8 @@ export const FortuneModal: React.FC<FortuneModalProps> = ({ result, onClose }) =
 
         <button
           onClick={onClose}
-          className="mt-6 w-full bg-indigo-400 hover:bg-indigo-500 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+          className="mt-6 w-full bg-indigo-300 hover:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+          style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}
         >
           關閉
         </button>

@@ -23,7 +23,7 @@ a,
 .shimmer-button {
   position: relative;
   overflow: hidden;
-  animation: float-up-down 2.5s ease-in-out infinite;
+  animation: float-up-down 2s ease-in-out infinite;
 }
 
 /* 上下飄動動畫 */
