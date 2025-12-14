@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FortuneResult } from '@/types'; 
-import { FortuneModal } from '@/components/FortuneModal'; 
+import { FortuneResult } from "@/types";
+import { FortuneModal } from "@/components/FortuneModal";
 
 interface DrawingPageProps {
   onFetchData: () => Promise<FortuneResult>;
@@ -20,37 +20,41 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
   isLoading,
 }) => {
   const catRef = useRef<HTMLDivElement>(null);
-  const [eyePositions, setEyePositions] = useState({
+  const STATIC_OFFSET = {
+    left: { x: -67, y: 78 },
+    right: { x: -89, y: 69 },
+  };
+
+  const [dynamicPositions, setDynamicPositions] = useState({
     left: { x: 0, y: 0 },
     right: { x: 0, y: 0 },
   });
   const [hasSelected, setHasSelected] = useState(false);
 
-  const handleSelectLeaf = async () => { 
-    if (hasSelected || isLoading) return; 
+  const handleSelectLeaf = async () => {
+    if (hasSelected || isLoading) return;
 
     try {
-      await onFetchData(); 
-      setShowModal(true); 
-
+      await onFetchData();
+      setShowModal(true);
     } catch (e) {
-        setHasSelected(false); 
+      setHasSelected(false);
     }
   };
 
-  // 眼白和眼黑的配置（需要根據實際圖片調整）
+  // 眼白和眼黑的配置
   const eyeConfig = {
     left: {
-      centerX: 0.4, // 左眼中心相對於圖片寬度的比例
-      centerY: 0.45, // 左眼中心相對於圖片高度的比例
-      radius: 0.03, // 眼白半徑相對於圖片寬度的比例
-      pupilRadius: 0.015, // 眼黑半徑相對於圖片寬度的比例
+      centerX: 0.4, 
+      centerY: 0.45, 
+      radius: 0.04,
+      pupilRadius: 0.023, 
     },
     right: {
-      centerX: 0.6, // 右眼中心相對於圖片寬度的比例
-      centerY: 0.45, // 右眼中心相對於圖片高度的比例
-      radius: 0.03,
-      pupilRadius: 0.015,
+      centerX: 0.6, 
+      centerY: 0.45, 
+      radius: 0.042,
+      pupilRadius: 0.024,
     },
   };
 
@@ -75,9 +79,8 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
           eyeToMouseX * eyeToMouseX + eyeToMouseY * eyeToMouseY
         );
 
-        // 眼白半徑（像素）
+        // 眼白眼黑半徑
         const eyeRadius = config.radius * rect.width;
-        // 眼黑半徑（像素）
         const pupilRadius = config.pupilRadius * rect.width;
         // 眼黑可以移動的最大距離（眼白半徑 - 眼黑半徑）
         const maxDistance = Math.max(0, eyeRadius - pupilRadius);
@@ -95,7 +98,7 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
         return { x: pupilX, y: pupilY };
       };
 
-      setEyePositions({
+      setDynamicPositions({
         left: updateEyePosition("left"),
         right: updateEyePosition("right"),
       });
@@ -106,6 +109,11 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  const finalLeftX = STATIC_OFFSET.left.x + dynamicPositions.left.x;
+  const finalLeftY = STATIC_OFFSET.left.y + dynamicPositions.left.y;
+  const finalRightX = STATIC_OFFSET.right.x + dynamicPositions.right.x;
+  const finalRightY = STATIC_OFFSET.right.y + dynamicPositions.right.y;
 
   return (
     <div
@@ -131,12 +139,8 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
             style={{
               width: `${eyeConfig.left.pupilRadius * 400 * 2}px`,
               height: `${eyeConfig.left.pupilRadius * 400 * 2}px`,
-              left: `calc(${eyeConfig.left.centerX * 100}% + ${
-                eyePositions.left.x
-              }px)`,
-              top: `calc(${eyeConfig.left.centerY * 100}% + ${
-                eyePositions.left.y
-              }px)`,
+              left: `calc(${eyeConfig.left.centerX * 100}% + ${finalLeftX}px)`,
+              top: `calc(${eyeConfig.left.centerY * 100}% + ${finalLeftY}px)`,
               transform: "translate(-50%, -50%)",
             }}
           />
@@ -147,12 +151,10 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
             style={{
               width: `${eyeConfig.right.pupilRadius * 400 * 2}px`,
               height: `${eyeConfig.right.pupilRadius * 400 * 2}px`,
-              left: `calc(${eyeConfig.right.centerX * 100}% + ${
-                eyePositions.right.x
-              }px)`,
-              top: `calc(${eyeConfig.right.centerY * 100}% + ${
-                eyePositions.right.y
-              }px)`,
+              left: `calc(${
+                eyeConfig.right.centerX * 100
+              }% + ${finalRightX}px)`,
+              top: `calc(${eyeConfig.right.centerY * 100}% + ${finalRightY}px)`,
               transform: "translate(-50%, -50%)",
             }}
           />
@@ -176,20 +178,22 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
                 src="/lucky leaf-1.png"
                 alt={`Lucky Leaf ${index}`}
                 className={`w-16 h-16 object-contain ${
-                  isLoading || hasSelected ? "opacity-70" : "animate-pulse hover:animate-none" 
+                  isLoading || hasSelected
+                    ? "opacity-70"
+                    : "animate-pulse hover:animate-none"
                 }`}
-                style={{ animationDelay: `${index *.8}s` }}
+                style={{ animationDelay: `${index * 0.8}s` }}
               />
             </button>
           ))}
         </div>
       </div>
       {showModal && result && (
-            <FortuneModal
-              result={result}
-              onClose={onModalClose} // 呼叫 App.tsx 的 handleModalClose，它會關閉 Modal 並切換頁面
-            />
-        )}
+        <FortuneModal
+          result={result}
+          onClose={onModalClose} 
+        />
+      )}
 
       {isLoading && (
         <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-40">
