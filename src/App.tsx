@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FortuneResult } from './types';
-import { getStoredFortune, saveFortune } from './utils/storage';
-import { fetchCatImage } from './utils/api';
-import { FortuneModal } from './components/FortuneModal';
-import fortunesData from './data/fortunes.json';
+import { FortuneResult } from '@/types';
+import { getStoredFortune, saveFortune } from '@/utils/storage';
+import { fetchCatImage } from '@/utils/api';
+import { FortuneModal } from '@/components/FortuneModal';
+import { DrawingPage } from '@/components/DrawingPage';
+import fortunesData from '@/data/fortunes.json';
 
 const App: React.FC = () => {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
@@ -12,6 +13,7 @@ const App: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isCursorVisible, setIsCursorVisible] = useState(true);
+  const [showDrawingPage, setShowDrawingPage] = useState(false);
 
   useEffect(() => {
     const stored = getStoredFortune();
@@ -54,13 +56,15 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const drawFortune = async () => {
+  const handleStartDrawing = () => {
+    setShowDrawingPage(true);
+  };
+
+  const fetchFortuneData = async (): Promise<FortuneResult> => {
     setIsLoading(true);
     try {
-      // 取得貓咪圖片
       const catImage = await fetchCatImage();
 
-      // 隨機選擇運勢小語
       const randomFortune =
         fortunesData[Math.floor(Math.random() * fortunesData.length)];
 
@@ -70,24 +74,53 @@ const App: React.FC = () => {
         date: new Date().toDateString(),
       };
 
-      // 儲存到 localStorage
       saveFortune(result);
       setCurrentResult(result);
       setHasDrawn(true);
-      setShowModal(true);
+      return result;
     } catch (error) {
       console.error('抽籤失敗:', error);
       alert('抽籤失敗，請稍後再試');
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    if (showDrawingPage) {
+        setShowDrawingPage(false); 
+    }
+};
 
   const handleViewFortune = () => {
     if (currentResult) {
       setShowModal(true);
     }
   };
+
+  if (showDrawingPage) {
+    return (
+      <>
+        <DrawingPage 
+        onFetchData={fetchFortuneData}
+        result={currentResult}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        onModalClose={handleModalClose}
+        isLoading={isLoading}/>
+        {isCursorVisible && (
+          <img
+            src="/cursor.png"
+            alt="cursor"
+            className="pointer-events-none fixed w-12 h-12 -translate-x-1/2 -translate-y-1/2 z-50 select-none"
+            style={{ left: cursorPos.x, top: cursorPos.y }}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
@@ -114,7 +147,7 @@ const App: React.FC = () => {
         </div>
       ) : (
         <button
-          onClick={drawFortune}
+          onClick={handleStartDrawing}
           disabled={isLoading}
           className="shimmer-button bg-cyan-600 shadow-lg shadow-gray-500/50  hover:bg-cyan-800 text-white font-semibold py-4 px-8 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg relative"
         >
@@ -125,7 +158,7 @@ const App: React.FC = () => {
       {showModal && currentResult && (
         <FortuneModal
           result={currentResult}
-          onClose={() => setShowModal(false)}
+          onClose={handleModalClose}
         />
       )}
 

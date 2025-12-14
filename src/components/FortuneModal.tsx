@@ -1,6 +1,6 @@
 import React from 'react';
-import { FortuneResult } from '../types';
-import { StarRating } from './StarRating';
+import { FortuneResult } from '@/types';
+import { StarRating } from '@/components/StarRating';
 
 interface FortuneModalProps {
   result: FortuneResult;
@@ -10,11 +10,15 @@ interface FortuneModalProps {
 export const FortuneModal: React.FC<FortuneModalProps> = ({ result, onClose }) => {
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-fade-in"
       onClick={onClose}
+      style={{
+        background: 'repeating-conic-gradient(#FFD700 0deg 15deg,#FFFACD 15deg 30deg)',
+      }}
     >
+      <div className="absolute inset-0 bg-black bg-opacity-5"></div>
       <div
-        className="bg-sky-100 rounded-lg shadow-xl max-w-md w-full p-6"
+        className="bg-sky-100 rounded-lg shadow-xl max-w-md w-full p-6 relative z-10 animate-modal-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6 bg-indigo-300 -mx-6 -mt-6 px-6 py-7 rounded-t-lg">
