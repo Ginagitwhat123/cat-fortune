@@ -173,12 +173,12 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
               }`}
             >
               <img
-                src="/lucky leaf-2.png"
+                src="/lucky leaf-1.png"
                 alt={`Lucky Leaf ${index}`}
                 className={`w-16 h-16 object-contain ${
-                  isLoading || hasSelected ? "opacity-70" : "animate-pulse" // 💡 停止動畫
+                  isLoading || hasSelected ? "opacity-70" : "animate-pulse hover:animate-none" 
                 }`}
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{ animationDelay: `${index *.8}s` }}
               />
             </button>
           ))}
