@@ -29,7 +29,7 @@ export const FortuneModal: React.FC<FortuneModalProps> = ({ result, onClose }) =
               className="h-8 w-auto object-contain"
             />
             <h2 
-              className="text-2xl font-bold text-gray-50"
+              className="text-lg lg:text-2xl font-bold text-gray-50"
               style={{ textShadow: '2px 2px 4px rgba(20, 20, 20, 0.5)' }}
             >
               今日運勢
@@ -59,13 +59,13 @@ export const FortuneModal: React.FC<FortuneModalProps> = ({ result, onClose }) =
           <StarRating stars={result.fortune.stars} />
         </div>
 
-        <p className="text-gray-700 text-center text-lg leading-relaxed">
+        <p className="text-gray-700 text-center text-sm sm:text-base lg:text-lg leading-relaxed">
           {result.fortune.message}
         </p>
 
         <button
           onClick={onClose}
-          className="mt-6 w-full bg-indigo-300 hover:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+          className="mt-6 w-full bg-indigo-300 hover:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-sm sm:text-base lg:text-lg"
           style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}
         >
           關閉

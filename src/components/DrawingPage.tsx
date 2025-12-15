@@ -120,7 +120,7 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
       className="min-h-screen flex flex-col items-center justify-center p-4"
       style={{ backgroundColor: "#b5b2be" }}
     >
-      <div className="flex flex-col items-center gap-8">
+      <div className="flex flex-col items-center gap-2 sm:gap-8">
         {/* 貓咪圖片容器 */}
         <div
           ref={catRef}
@@ -160,11 +160,11 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
           />
         </div>
 
-        <p className="text-xl text-gray-600 mb-5">
+        <p className="text-gray-600 mb-5 text-sm sm:text-base lg:text-lg">
           {isLoading ? "貓貓產生中..." : "請選擇其中一個幸運草"}
         </p>
 
-        <div className="flex gap-20 items-center">
+        <div className="flex gap-2 sm:gap-20 items-center">
           {[1, 2, 3, 4, 5].map((index) => (
             <button
               key={index}
@@ -177,7 +177,7 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
               <img
                 src="/lucky leaf-1.png"
                 alt={`Lucky Leaf ${index}`}
-                className={`w-16 h-16 object-contain ${
+                className={`w-16 h-16 object-contain  ${
                   isLoading || hasSelected
                     ? "opacity-70"
                     : "animate-pulse hover:animate-none"

@@ -131,15 +131,15 @@ const App: React.FC = () => {
           className="w-full max-w-4xl h-auto object-contain"
         />
       </div>
-      <p className="text-gray-600 mb-4 text-xl">每日運勢，貓咪相伴</p>
+      <p className="text-gray-600 mb-4 text-sm sm:text-base lg:text-lg">每日運勢，貓咪相伴</p>
 
       {hasDrawn ? (
         <div>
           <div className="mb-6">
-            <p className="text-lg text-gray-700 mb-4">今天已經抽過籤囉！</p>
+            <p className="text-sm sm:text-base lg:text-lg text-gray-700 mb-4">今天已經抽過籤囉！</p>
             <button
               onClick={handleViewFortune}
-              className="bg-purple-500 shadow-lg shadow-gray-500/50 hover:bg-purple-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors text-lg"
+              className="bg-purple-500 shadow-lg shadow-gray-500/50 hover:bg-purple-600 text-white font-semibold py-3 px-4 sm:px-8 rounded-lg transition-colors text-sm sm:text-base lg:text-lg"
             >
               查看今日份的貓貓
             </button>
@@ -149,7 +149,7 @@ const App: React.FC = () => {
         <button
           onClick={handleStartDrawing}
           disabled={isLoading}
-          className="shimmer-button bg-cyan-600 shadow-lg shadow-gray-500/50  hover:bg-cyan-800 text-white font-semibold py-4 px-8 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg relative"
+          className="shimmer-button bg-cyan-600 shadow-lg shadow-gray-500/50  hover:bg-cyan-800 text-white font-semibold py-4 px-4 sm:px-8 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg relative text-sm sm:text-base lg:text-lg"
         >
           {isLoading ? '抽籤中...' : '抽出今日份的貓貓'}
         </button>
