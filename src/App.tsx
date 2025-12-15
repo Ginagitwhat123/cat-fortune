@@ -14,6 +14,7 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCursorVisible, setIsCursorVisible] = useState(true);
   const [showDrawingPage, setShowDrawingPage] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
     const stored = getStoredFortune();
@@ -54,6 +55,17 @@ const App: React.FC = () => {
       window.removeEventListener('blur', handleBlur);
       window.removeEventListener('focus', handleFocus);
     };
+  }, []);
+
+  // 偵測是否為觸控設備
+  useEffect(() => {
+    const supportsTouch = 'ontouchstart' in window;
+    const hasTouchPoints = navigator.maxTouchPoints > 0;
+    const hasMsTouchPoints = (navigator as any).msMaxTouchPoints > 0;
+
+    if (supportsTouch || hasTouchPoints || hasMsTouchPoints) {
+      setIsTouchDevice(true);
+    }
   }, []);
 
   const handleStartDrawing = () => {
@@ -110,7 +122,7 @@ const App: React.FC = () => {
         setShowModal={setShowModal}
         onModalClose={handleModalClose}
         isLoading={isLoading}/>
-        {isCursorVisible && (
+        {!isTouchDevice && isCursorVisible && (
           <img
             src="/cursor.png"
             alt="cursor"
@@ -162,7 +174,7 @@ const App: React.FC = () => {
         />
       )}
 
-      {isCursorVisible && (
+      {!isTouchDevice && isCursorVisible && (
         <img
           src="/cursor.png"
           alt="cursor"
