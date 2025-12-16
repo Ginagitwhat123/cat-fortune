@@ -5,7 +5,7 @@ interface StarRatingProps {
   maxStars?: number;
 }
 
-export const StarRating: React.FC<StarRatingProps> = ({ stars, maxStars = 5 }) => {
+export const StarRating = React.memo(({ stars, maxStars = 5 }: StarRatingProps) => {
   return (
     <div className="flex justify-center gap-1">
       {Array.from({ length: maxStars }).map((_, index) => (
@@ -20,5 +20,5 @@ export const StarRating: React.FC<StarRatingProps> = ({ stars, maxStars = 5 }) =
       ))}
     </div>
   );
-};
+});
 

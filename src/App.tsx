@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FortuneResult } from "@/types";
 import { getStoredFortune, saveFortune } from "@/utils/storage";
 import { fetchCatImage } from "@/utils/api";
@@ -114,12 +114,12 @@ const App: React.FC = () => {
     }
   };
 
-  const handleModalClose = () => {
+  const handleModalClose = useCallback(() => {
     setShowModal(false);
     if (showDrawingPage) {
-      setShowDrawingPage(false);
+        setShowDrawingPage(false); 
     }
-  };
+}, [showDrawingPage]);
 
   const handleViewFortune = () => {
     if (currentResult) {
