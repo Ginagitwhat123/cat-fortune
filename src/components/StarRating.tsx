@@ -11,7 +11,7 @@ export const StarRating: React.FC<StarRatingProps> = ({ stars, maxStars = 5 }) =
       {Array.from({ length: maxStars }).map((_, index) => (
         <span
           key={index}
-          className={`text-3xl ${
+          className={`text-sm md:text-xl lg:text-3xl ${
             index < stars ? 'text-yellow-400' : 'text-gray-300'
           }`}
         >

@@ -18,18 +18,18 @@ export const FortuneModal: React.FC<FortuneModalProps> = ({ result, onClose }) =
     >
       <div className="absolute inset-0 bg-black bg-opacity-5"></div>
       <div
-        className="bg-sky-100 rounded-lg shadow-xl max-w-md w-full p-6 relative z-10 animate-modal-fade-in"
+        className="bg-sky-100 rounded-lg shadow-xl w-9/12 max-w-sm md:w-full md:max-w-md p-4 sm:p-4 md:p-6 relative z-10 animate-modal-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-6 bg-indigo-300 -mx-6 -mt-6 px-6 py-7 rounded-t-lg">
+        <div className="flex justify-between items-center mb-4 sm-mb-6 bg-indigo-300 -mx-4 sm:-mx-4  md:-mx-6 -mt-4 sm:-mt-4 md:-mt-6 px-4 sm:px-4 md:px-6 py-4 md:py-7 rounded-t-lg">
           <div className="flex items-center gap-2">
             <img 
               src="/lucky leaf-2.png" 
               alt="幸運葉" 
-              className="h-8 w-auto object-contain"
+              className="h-5 md:h-8 w-auto object-contain"
             />
             <h2 
-              className="text-lg lg:text-2xl font-bold text-gray-50"
+              className="text-md sm:text-lg lg:text-2xl font-bold text-gray-50"
               style={{ textShadow: '2px 2px 4px rgba(20, 20, 20, 0.5)' }}
             >
               今日運勢
@@ -37,16 +37,16 @@ export const FortuneModal: React.FC<FortuneModalProps> = ({ result, onClose }) =
           </div>
           <button
             onClick={onClose}
-            className="relative text-gray-100 hover:text-gray-800 text-2xl leading-none w-8 h-8 flex items-center justify-center transition-colors group"
+            className="relative text-gray-100 hover:text-gray-800 text-md sm:text-lg text-2xl leading-none w-8 h-8 flex items-center justify-center transition-colors group"
           >
             <span className="absolute inset-0 rounded-full bg-amber-200 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
             <span className="relative z-10">×</span>
           </button>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4 mb:mb-6">
           <div
-            className="w-full h-80 rounded-lg mb-4 bg-gray-200"
+            className="w-full h-64 md:h-80 rounded-lg mb-4 bg-gray-200"
             style={{
               backgroundImage: `url(${result.catImage.url})`,
               backgroundSize: 'cover',
@@ -55,17 +55,17 @@ export const FortuneModal: React.FC<FortuneModalProps> = ({ result, onClose }) =
           />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-2 mb:mb-4">
           <StarRating stars={result.fortune.stars} />
         </div>
 
-        <p className="text-gray-700 text-center text-sm sm:text-base lg:text-lg leading-relaxed">
+        <p className="text-gray-700 text-start text-sm sm:text-base lg:text-lg leading-relaxed">
           {result.fortune.message}
         </p>
 
         <button
           onClick={onClose}
-          className="mt-6 w-full bg-indigo-300 hover:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-sm sm:text-base lg:text-lg"
+          className="mt-4 sm:mt-5 lg:mt-6 w-full bg-indigo-300 hover:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-sm sm:text-base lg:text-lg"
           style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}
         >
           關閉
