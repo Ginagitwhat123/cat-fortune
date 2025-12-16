@@ -139,7 +139,7 @@ const App: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center p-4 text-center sm:-translate-y-6 
+      className="min-h-screen flex flex-col items-center justify-center text-center sm:-translate-y-20 
         lg:translate-y-0"
     >
       <div className="mb-0 flex justify-center w-full">
