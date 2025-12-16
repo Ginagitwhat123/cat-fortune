@@ -135,7 +135,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center p-4 text-center sm:-translate-y-6">
+    <div className="h-screen flex flex-col items-center justify-center p-4 text-center sm:-translate-y-56">
       <div className="mb-0 flex justify-center w-full">
         <img 
           src="/logo cat.png" 
