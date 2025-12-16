@@ -70,6 +70,19 @@ const App: React.FC = () => {
     }
   }, []);
 
+
+  //確保在不同手機瀏覽器都能視覺置中
+  useEffect(() => {
+    const setVh = () => {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    setVh();
+    window.addEventListener('resize', setVh);
+    return () => window.removeEventListener('resize', setVh);
+}, []);
+
   const handleStartDrawing = () => {
     setShowDrawingPage(true);
   };
@@ -139,7 +152,7 @@ const App: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center text-center sm:-translate-y-20 
+      className="min-h-screen-safe flex flex-col items-center justify-center text-center sm:-translate-y-6 
         lg:translate-y-0"
     >
       <div className="mb-0 flex justify-center w-full">
