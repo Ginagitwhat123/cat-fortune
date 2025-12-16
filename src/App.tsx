@@ -137,6 +137,7 @@ const App: React.FC = () => {
           setShowModal={setShowModal}
           onModalClose={handleModalClose}
           isLoading={isLoading}
+          isTouchDevice={isTouchDevice}
         />
         {!isTouchDevice && isCursorVisible && (
           <img

@@ -9,6 +9,7 @@ interface DrawingPageProps {
   setShowModal: (show: boolean) => void;
   onModalClose: () => void;
   isLoading: boolean;
+  isTouchDevice: boolean;
 }
 
 export const DrawingPage: React.FC<DrawingPageProps> = ({
@@ -18,6 +19,7 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
   setShowModal,
   onModalClose,
   isLoading,
+  isTouchDevice,
 }) => {
   const catRef = useRef<HTMLDivElement>(null);
   const STATIC_OFFSET = {
@@ -30,6 +32,10 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
     right: { x: 0, y: 0 },
   });
   const [hasSelected, setHasSelected] = useState(false);
+
+  const [targetLeafIndex, setTargetLeafIndex] = useState(0); 
+  const leafRefs = useRef<(HTMLButtonElement | null)[]>([]); 
+  const TARGET_LEAVES = [1, 3, 5];
 
   const handleSelectLeaf = async () => {
     if (hasSelected || isLoading) return;
@@ -59,56 +65,82 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
   };
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!catRef.current) return;
+    if (hasSelected || isLoading) return; 
 
-      const rect = catRef.current.getBoundingClientRect();
+    const updateEyePositionLogic = (targetX: number, targetY: number, catRect: DOMRect) => {
+      const newPositions = { left: { x: 0, y: 0 }, right: { x: 0, y: 0 } };
 
-      // 更新兩個眼睛的位置
-      const updateEyePosition = (eye: "left" | "right") => {
-        const config = eyeConfig[eye];
+      (["left", "right"] as const).forEach(eye => {
+          const config = eyeConfig[eye];
+          const eyeCenterX = catRect.left + config.centerX * catRect.width;
+          const eyeCenterY = catRect.top + config.centerY * catRect.height;
 
-        // 計算眼睛中心在頁面上的絕對位置
-        const eyeCenterX = rect.left + config.centerX * rect.width;
-        const eyeCenterY = rect.top + config.centerY * rect.height;
+          const eyeToTargetX = targetX - eyeCenterX;
+          const eyeToTargetY = targetY - eyeCenterY;
+          const eyeToTargetDistance = Math.sqrt(
+              eyeToTargetX * eyeToTargetX + eyeToTargetY * eyeToTargetY
+          );
 
-        // 計算從眼睛中心到滑鼠的方向向量
-        const eyeToMouseX = e.clientX - eyeCenterX;
-        const eyeToMouseY = e.clientY - eyeCenterY;
-        const eyeToMouseDistance = Math.sqrt(
-          eyeToMouseX * eyeToMouseX + eyeToMouseY * eyeToMouseY
-        );
+          const eyeRadius = config.radius * catRect.width;
+          const pupilRadius = config.pupilRadius * catRect.width;
+          const maxDistance = Math.max(0, eyeRadius - pupilRadius);
 
-        // 眼白眼黑半徑
-        const eyeRadius = config.radius * rect.width;
-        const pupilRadius = config.pupilRadius * rect.width;
-        // 眼黑可以移動的最大距離（眼白半徑 - 眼黑半徑）
-        const maxDistance = Math.max(0, eyeRadius - pupilRadius);
+          let pupilX = 0;
+          let pupilY = 0;
 
-        let pupilX = 0;
-        let pupilY = 0;
+          if (eyeToTargetDistance > 0) {
+              const limitedDistance = Math.min(eyeToTargetDistance, maxDistance);
+              pupilX = (eyeToTargetX / eyeToTargetDistance) * limitedDistance;
+              pupilY = (eyeToTargetY / eyeToTargetDistance) * limitedDistance;
+          }
+          newPositions[eye] = { x: pupilX, y: pupilY };
+      });
+      return newPositions;
+    };
 
-        if (eyeToMouseDistance > 0) {
-          // 限制眼黑在眼白範圍內
-          const limitedDistance = Math.min(eyeToMouseDistance, maxDistance);
-          pupilX = (eyeToMouseX / eyeToMouseDistance) * limitedDistance;
-          pupilY = (eyeToMouseY / eyeToMouseDistance) * limitedDistance;
-        }
 
-        return { x: pupilX, y: pupilY };
+    if (!isTouchDevice) {
+      // 模式 1：網頁版 (Mouse Move)
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!catRef.current) return;
+        const rect = catRef.current.getBoundingClientRect();
+        const newPositions = updateEyePositionLogic(e.clientX, e.clientY, rect);
+        setDynamicPositions(newPositions);
       };
 
-      setDynamicPositions({
-        left: updateEyePosition("left"),
-        right: updateEyePosition("right"),
-      });
-    };
+      window.addEventListener("mousemove", handleMouseMove);
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+      };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
+    } else {
+      // 模式 2：手機版 (定時動畫) 
+      const timer = setInterval(() => {
+          setTargetLeafIndex(prevIndex => (prevIndex + 1) % TARGET_LEAVES.length);
+      }, 1500); 
+
+      const animateEyes = () => {
+          if (!catRef.current || leafRefs.current.length === 0) return;
+
+          const targetIndex = TARGET_LEAVES[targetLeafIndex];
+          const targetRef = leafRefs.current[targetIndex - 1]; 
+
+          if (!targetRef) return;
+
+          const catRect = catRef.current.getBoundingClientRect();
+          const targetRect = targetRef.getBoundingClientRect();
+          const targetCenterX = targetRect.left + targetRect.width / 2;
+          const targetCenterY = targetRect.top + targetRect.height / 2;
+          
+          const newPositions = updateEyePositionLogic(targetCenterX, targetCenterY, catRect);
+          setDynamicPositions(newPositions);
+      };
+      animateEyes();
+
+      return () => clearInterval(timer);
+    }
+
+  }, [isTouchDevice, targetLeafIndex, hasSelected, isLoading]);
 
   const finalLeftX = STATIC_OFFSET.left.x + dynamicPositions.left.x;
   const finalLeftY = STATIC_OFFSET.left.y + dynamicPositions.left.y;
@@ -168,6 +200,7 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
           {[1, 2, 3, 4, 5].map((index) => (
             <button
               key={index}
+              ref={el => (leafRefs.current[index - 1] = el)}
               onClick={handleSelectLeaf}
               disabled={isLoading || hasSelected}
               className={`transition-transform hover:scale-150 active:scale-95 cursor-pointer ${
