@@ -23,8 +23,8 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
 }) => {
   const catRef = useRef<HTMLDivElement>(null);
   const STATIC_OFFSET = {
-    left: { x: -67, y: 78 },
-    right: { x: -89, y: 69 },
+    left: { x: -62.8, y: 73.5 },
+    right: { x: -83.9, y: 65.3 },
   };
 
   const [dynamicPositions, setDynamicPositions] = useState({
@@ -156,8 +156,8 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
         {/* 貓咪圖片容器 */}
         <div
           ref={catRef}
-          className="relative"
-          style={{ width: "400px", height: "auto" }}
+          className="relative overflow-hidden"
+          style={{ width: "375px", height: "auto" }}
         >
           <img
             src="/looking cat.png"
@@ -169,8 +169,8 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
           <div
             className="absolute rounded-full bg-black transition-all duration-100 ease-out"
             style={{
-              width: `${eyeConfig.left.pupilRadius * 400 * 2}px`,
-              height: `${eyeConfig.left.pupilRadius * 400 * 2}px`,
+              width: `${eyeConfig.left.pupilRadius * 375 * 2}px`,
+              height: `${eyeConfig.left.pupilRadius * 375 * 2}px`,
               left: `calc(${eyeConfig.left.centerX * 100}% + ${finalLeftX}px)`,
               top: `calc(${eyeConfig.left.centerY * 100}% + ${finalLeftY}px)`,
               transform: "translate(-50%, -50%)",
@@ -181,8 +181,8 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
           <div
             className="absolute rounded-full bg-black transition-all duration-100 ease-out"
             style={{
-              width: `${eyeConfig.right.pupilRadius * 400 * 2}px`,
-              height: `${eyeConfig.right.pupilRadius * 400 * 2}px`,
+              width: `${eyeConfig.right.pupilRadius * 375 * 2}px`,
+              height: `${eyeConfig.right.pupilRadius * 375 * 2}px`,
               left: `calc(${
                 eyeConfig.right.centerX * 100
               }% + ${finalRightX}px)`,
