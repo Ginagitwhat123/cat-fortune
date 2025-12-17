@@ -149,7 +149,7 @@ export const DrawingPage: React.FC<DrawingPageProps> = ({
 
   return (
     <div
-      className="min-h-screen-safe flex flex-col items-center justify-center p-4"
+      className=" min-h-screen-safe flex flex-col items-center justify-center p-4"
       style={{ backgroundColor: "#b5b2be" }}
     >
       <div className="flex flex-col items-center gap-2 sm:gap-8">

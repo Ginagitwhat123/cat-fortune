@@ -5,16 +5,15 @@ import { fetchCatImage } from "@/utils/api";
 import { FortuneModal } from "@/components/FortuneModal";
 import { DrawingPage } from "@/components/DrawingPage";
 import fortunesData from "@/data/fortunes.json";
+import CustomCursor from "@/components/CustomCursor";
 
 const App: React.FC = () => {
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [hasDrawn, setHasDrawn] = useState(false);
   const [currentResult, setCurrentResult] = useState<FortuneResult | null>(
     null
   );
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isCursorVisible, setIsCursorVisible] = useState(true);
   const [showDrawingPage, setShowDrawingPage] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
@@ -24,39 +23,6 @@ const App: React.FC = () => {
       setHasDrawn(true);
       setCurrentResult(stored);
     }
-  }, []);
-
-  useEffect(() => {
-    const handleMove = (e: MouseEvent) => {
-      const withinX = e.clientX >= 0 && e.clientX <= window.innerWidth;
-      const withinY = e.clientY >= 0 && e.clientY <= window.innerHeight;
-      setCursorPos({ x: e.clientX, y: e.clientY });
-      setIsCursorVisible(withinX && withinY);
-    };
-    const handleEnter = () => setIsCursorVisible(true);
-    const handleLeave = () => setIsCursorVisible(false);
-    const handleOut = (e: MouseEvent) => {
-      if (!e.relatedTarget && !(e as any).toElement) {
-        setIsCursorVisible(false);
-      }
-    };
-    const handleBlur = () => setIsCursorVisible(false);
-    const handleFocus = () => setIsCursorVisible(true);
-
-    window.addEventListener("mousemove", handleMove);
-    window.addEventListener("mouseenter", handleEnter);
-    window.addEventListener("mouseleave", handleLeave);
-    window.addEventListener("mouseout", handleOut);
-    window.addEventListener("blur", handleBlur);
-    window.addEventListener("focus", handleFocus);
-    return () => {
-      window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("mouseenter", handleEnter);
-      window.removeEventListener("mouseleave", handleLeave);
-      window.removeEventListener("mouseout", handleOut);
-      window.removeEventListener("blur", handleBlur);
-      window.removeEventListener("focus", handleFocus);
-    };
   }, []);
 
   // 偵測是否為觸控設備
@@ -70,18 +36,17 @@ const App: React.FC = () => {
     }
   }, []);
 
-
   //確保在不同手機瀏覽器都能視覺置中
   useEffect(() => {
     const setVh = () => {
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
 
     setVh();
-    window.addEventListener('resize', setVh);
-    return () => window.removeEventListener('resize', setVh);
-}, []);
+    window.addEventListener("resize", setVh);
+    return () => window.removeEventListener("resize", setVh);
+  }, []);
 
   const handleStartDrawing = () => {
     setShowDrawingPage(true);
@@ -117,9 +82,9 @@ const App: React.FC = () => {
   const handleModalClose = useCallback(() => {
     setShowModal(false);
     if (showDrawingPage) {
-        setShowDrawingPage(false); 
+      setShowDrawingPage(false);
     }
-}, [showDrawingPage]);
+  }, [showDrawingPage]);
 
   const handleViewFortune = () => {
     if (currentResult) {
@@ -127,9 +92,9 @@ const App: React.FC = () => {
     }
   };
 
-  if (showDrawingPage) {
-    return (
-      <>
+  return (
+    <div className="min-h-screen-safe relative w-full">
+      {showDrawingPage ? (
         <DrawingPage
           onFetchData={fetchFortuneData}
           result={currentResult}
@@ -139,69 +104,48 @@ const App: React.FC = () => {
           isLoading={isLoading}
           isTouchDevice={isTouchDevice}
         />
-        {!isTouchDevice && isCursorVisible && (
-          <img
-            src="/cursor.png"
-            alt="cursor"
-            className="pointer-events-none fixed w-12 h-12 -translate-x-1/2 -translate-y-1/2 z-50 select-none"
-            style={{ left: cursorPos.x, top: cursorPos.y }}
-          />
-        )}
-      </>
-    );
-  }
-
-  return (
-    <div
-      className="min-h-screen-safe flex flex-col items-center justify-center text-center sm:-translate-y-6 
-        lg:translate-y-0"
-    >
-      <div className="mb-0 flex justify-center w-full">
-        <img
-          src="/logo cat.png"
-          alt="抽一籤好喵"
-          className="w-full max-w-4xl h-auto object-contain"
-        />
-      </div>
-      <p className="text-gray-600 mb-4 text-sm sm:text-base lg:text-lg">
-        每日運勢，貓咪相伴
-      </p>
-
-      {hasDrawn ? (
-        <div>
-          <div className="mb-6">
-            <p className="text-sm sm:text-base lg:text-lg text-gray-700 mb-4">
-              今天已經抽過籤囉！
-            </p>
-            <button
-              onClick={handleViewFortune}
-              className="bg-purple-500 shadow-lg shadow-gray-500/50 hover:bg-purple-600 text-white font-semibold py-3 px-4 sm:px-8 rounded-lg transition-colors text-sm sm:text-base lg:text-lg"
-            >
-              查看今日份的貓貓
-            </button>
-          </div>
-        </div>
       ) : (
-        <button
-          onClick={handleStartDrawing}
-          disabled={isLoading}
-          className="shimmer-button bg-cyan-600 shadow-lg shadow-gray-500/50  hover:bg-cyan-800 text-white font-semibold py-4 px-4 sm:px-8 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg relative text-sm sm:text-base lg:text-lg"
-        >
-          {isLoading ? "抽籤中..." : "抽出今日份的貓貓"}
-        </button>
+        <div className="min-h-screen-safe flex flex-col items-center justify-center text-center p-4 sm:-translate-y-6 lg:translate-y-0">
+          <div className="mb-0 flex justify-center w-full">
+            <img
+              src="/logo cat.png"
+              alt="抽一籤好喵"
+              className="w-full max-w-4xl h-auto object-contain"
+            />
+          </div>
+          <p className="text-gray-600 mb-4 text-sm sm:text-base lg:text-lg">
+            每日運勢，貓咪相伴
+          </p>
+
+          {hasDrawn ? (
+            <div>
+              <div className="mb-6">
+                <p className="text-sm sm:text-base lg:text-lg text-gray-700 mb-4">
+                  今天已經抽過籤囉！
+                </p>
+                <button
+                  onClick={handleViewFortune}
+                  className="bg-purple-500 shadow-lg shadow-gray-500/50 hover:bg-purple-600 text-white font-semibold py-3 px-4 sm:px-8 rounded-lg transition-colors text-sm sm:text-base lg:text-lg"
+                >
+                  查看今日份的貓貓
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={handleStartDrawing}
+              disabled={isLoading}
+              className="shimmer-button bg-cyan-600 shadow-lg shadow-gray-500/50  hover:bg-cyan-800 text-white font-semibold py-4 px-4 sm:px-8 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg relative text-sm sm:text-base lg:text-lg"
+            >
+              {isLoading ? "抽籤中..." : "抽出今日份的貓貓"}
+            </button>
+          )}
+        </div>
       )}
+      <CustomCursor isTouchDevice={isTouchDevice} />
 
       {showModal && currentResult && (
         <FortuneModal result={currentResult} onClose={handleModalClose} />
-      )}
-
-      {!isTouchDevice && isCursorVisible && (
-        <img
-          src="/cursor.png"
-          alt="cursor"
-          className="pointer-events-none fixed w-12 h-12 -translate-x-1/2 -translate-y-1/2 z-50 select-none"
-          style={{ left: cursorPos.x, top: cursorPos.y }}
-        />
       )}
     </div>
   );
