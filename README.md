@@ -1,42 +1,28 @@
 # 抽一籤好喵
 
-一個每日抽運勢籤搭配貓咪圖片隨機生成的 side project。
+一個隨機生成貓咪圖片(串接公開API)的每日運勢抽籤side project。
+vercel展示網址：
+https://cat-fortune.vercel.app/
 
-## 技術棧
+## 技術
 
 - React (Vite)
 - TypeScript
 - TailwindCSS
+- Git 版本控制
 
-## 功能特色
+## 功能說明
 
-- 🐱 每日隨機貓咪圖片
-- ⭐ 運勢評分（1-5 顆星）
-- 📝 與貓有關的運勢小語
-- 💾 使用 localStorage 記錄每日抽籤結果
-- 🔒 一天只能抽一次籤
+- 串接公開API（The Cat API）在抽籤結果隨機顯示貓咪圖片
+  https://www.freepublicapis.com/the-cat-api
+- 使用 localStorage 記錄每日抽籤結果，限制一天只能抽一次籤
+- JS動畫特效（首頁抽籤按鍵、等待抽籤時手機版有貓咪眼球移動動畫，電腦版則是貓咪眼球追蹤鼠標）
+- 為RWD頁面
 
-## 安裝與執行
+## 下載專案後本地操作說明
 
-```bash
-# 安裝依賴
-npm install
+- npm i 安裝所需套件
+- npm run dev 開啟本地專案
 
-# 開發模式
-npm run dev
 
-# 建置
-npm run build
-
-# 預覽建置結果
-npm run preview
-```
-
-## 使用說明
-
-1. 點擊「抽一籤」按鈕
-2. 系統會隨機選擇一張貓咪圖片和運勢小語
-3. 結果會顯示在彈跳視窗中
-4. 抽籤結果會儲存在 localStorage，一天只能抽一次
-5. 如果已經抽過，可以點擊「查看已抽的籤」來查看今日的結果
 
