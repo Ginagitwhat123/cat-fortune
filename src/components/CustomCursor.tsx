@@ -13,24 +13,38 @@ const CustomCursor: React.FC<CustomCursorProps> = ({ isTouchDevice }) => {
 
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
+      const isInside =
+        e.clientX > 2 &&
+        e.clientY > 2 &&
+        e.clientX < window.innerWidth - 2 &&
+        e.clientY < window.innerHeight - 2;
+
+      if (!isInside) {
+        setIsVisible(false);
+      } else {
+        if (!isVisible) setIsVisible(true);
+      }
     };
 
-    const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseOut = (e: MouseEvent) => {
+      if (!e.relatedTarget) {
+        setIsVisible(false);
+      }
+    };
     const handleMouseEnter = () => setIsVisible(true);
     const handleBlur = () => setIsVisible(false);
     const handleFocus = () => setIsVisible(true);
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseleave", handleMouseLeave);
-    window.addEventListener("mouseenter", handleMouseEnter);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseout", handleMouseOut);
+    document.addEventListener("mouseenter", handleMouseEnter);
     window.addEventListener("blur", handleBlur);
     window.addEventListener("focus", handleFocus);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseleave", handleMouseLeave);
-      window.removeEventListener("mouseenter", handleMouseEnter);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseout", handleMouseOut);
+      document.removeEventListener("mouseenter", handleMouseEnter);
       window.removeEventListener("blur", handleBlur);
       window.removeEventListener("focus", handleFocus);
     };
@@ -46,7 +60,6 @@ const CustomCursor: React.FC<CustomCursorProps> = ({ isTouchDevice }) => {
       style={{
         left: position.x,
         top: position.y,
-        // transform: `translate(calc(${position.x}px - 50%), calc(${position.y}px - 50%))`
       }}
     />
   );
